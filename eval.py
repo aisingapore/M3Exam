@@ -9,9 +9,10 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--selected_langs", type=str, default=None, help="list of string of languages")
     parser.add_argument("--data_path", type=str, default="./data/text-question/", help="path for writing and reading the data")
-    parser.add_argument("--model", type=str, default="chat", help="[chat, gpt4]")
+    parser.add_argument("--model_name", type=str, default="chat", help="[chat, gpt4]")
     parser.add_argument("--method", type=str, default="default", help="[default]")
     parser.add_argument("--setting", type=str, default="few-shot", help="[few-shot, zero-shot]")
+    parser.add_argument("--output_path", type=str, default="outputs")
     return parser.parse_args()
 
 
@@ -62,7 +63,8 @@ def run_evaluate(args, selected_langs):
     for lang in selected_langs:
         print('='*50)
         print(f"Run eval on {lang}...")
-        output_folder = f"outputs/{args.setting}/{args.method}/model_{args.model}/{lang}/"
+        output_folder = f"{args.output_path}/{args.setting}/{args.method}/model_{args.model_name}/{lang}/"
+        final_model_output_folder = f"{args.output_path}/{args.setting}/{args.method}/model_{args.model_name}/"
         print(output_folder)
         if os.path.exists(output_folder):
             pred_file_path = output_folder + f"{lang}-pred.json"
@@ -72,7 +74,7 @@ def run_evaluate(args, selected_langs):
 
                 # actually return the correct / total numbers of `acc_scores` for easily check 
                 # accuracy along different dimenions
-                acc_scores, errors, illformats = compute_acc_score(preds, args.model)
+                acc_scores, errors, illformats = compute_acc_score(preds, args.model_name)
 
                 acc_dict[lang] = acc_scores
                 error_file_path = output_folder + f"{lang}-error.json"
@@ -88,7 +90,7 @@ def run_evaluate(args, selected_langs):
         else:
             print("Cannot find corresponding prediction file!")
     
-    result_path = output_folder + 'result.txt'
+    result_path = final_model_output_folder + 'result.txt'
     with open(result_path, 'w') as f:
         json.dump(acc_dict, f, indent=4)
     

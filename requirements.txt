@@ -1,0 +1,10 @@
+numpy
+pandas
+pyarrow
+sentencepiece
+tokenizers
+torch
+tqdm
+transformers
+einops
+accelerate
