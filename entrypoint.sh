@@ -2,7 +2,10 @@
 
 set -euo pipefail
 
-[ -d data/m3exam ] || git clone "https://${HF_USER}:${HF_TOKEN}@huggingface.co/datasets/aisingapore/m3exam" data/m3exam && mv data/m3exam/* data
+if [ ! -d data/m3exam ]; then
+    git clone "https://${HF_USER}:${HF_TOKEN}@huggingface.co/datasets/aisingapore/m3exam" data/m3exam
+    mv data/m3exam/* data
+fi
 
 args=$(getopt -o m:e: -l main:,eval: -n 'm3exam' -- "$@")
 if [ $? != 0 ]; then
